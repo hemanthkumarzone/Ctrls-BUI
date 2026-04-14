@@ -1,0 +1,172 @@
+{
+  "summary": {
+    "totalSpend": 284750.00,
+    "monthOverMonthChange": 12.4,
+    "forecastedSpend": 310000.00,
+    "budgetLimit": 300000.00,
+    "savingsOpportunity": 47200.00,
+    "anomaliesDetected": 3
+  },
+  "costByCategory": [
+    { "name": "Compute", "value": 120000, "change": 8.2 },
+    { "name": "Storage", "value": 54000, "change": -3.1 },
+    { "name": "Network", "value": 38000, "change": 15.6 },
+    { "name": "Kubernetes", "value": 47000, "change": 22.1 },
+    { "name": "Database", "value": 25750, "change": 5.0 }
+  ],
+  "costTrend": [
+    { "month": "Apr 2025", "compute": 95000, "storage": 48000, "network": 30000, "kubernetes": 35000, "database": 22000 },
+    { "month": "May 2025", "compute": 98000, "storage": 49500, "network": 31000, "kubernetes": 36500, "database": 22500 },
+    { "month": "Jun 2025", "compute": 100000, "storage": 50000, "network": 32000, "kubernetes": 38000, "database": 23000 },
+    { "month": "Jul 2025", "compute": 102000, "storage": 51000, "network": 33000, "kubernetes": 39000, "database": 23200 },
+    { "month": "Aug 2025", "compute": 105000, "storage": 52000, "network": 33500, "kubernetes": 40000, "database": 23500 },
+    { "month": "Sep 2025", "compute": 107000, "storage": 53000, "network": 34000, "kubernetes": 41000, "database": 24000 },
+    { "month": "Oct 2025", "compute": 108000, "storage": 53500, "network": 35000, "kubernetes": 42000, "database": 24200 },
+    { "month": "Nov 2025", "compute": 110000, "storage": 54000, "network": 35500, "kubernetes": 43000, "database": 24500 },
+    { "month": "Dec 2025", "compute": 112000, "storage": 54500, "network": 36000, "kubernetes": 44000, "database": 25000 },
+    { "month": "Jan 2026", "compute": 115000, "storage": 55000, "network": 36500, "kubernetes": 45000, "database": 25200 },
+    { "month": "Feb 2026", "compute": 118000, "storage": 55500, "network": 37500, "kubernetes": 46000, "database": 25500 },
+    { "month": "Mar 2026", "compute": 120000, "storage": 54000, "network": 38000, "kubernetes": 47000, "database": 25750 }
+  ],
+  "topServices": [
+    { "name": "EC2 Instances", "provider": "AWS", "cost": 68500, "usage": "1,240 vCPU-hours", "trend": 12.3 },
+    { "name": "GKE Clusters", "provider": "GCP", "cost": 34200, "usage": "8 clusters", "trend": 22.1 },
+    { "name": "S3 Storage", "provider": "AWS", "cost": 28400, "usage": "450 TB", "trend": -2.4 },
+    { "name": "Azure VMs", "provider": "Azure", "cost": 24800, "usage": "380 instances", "trend": 9.7 },
+    { "name": "Cloud SQL", "provider": "GCP", "cost": 18900, "usage": "12 instances", "trend": 5.2 },
+    { "name": "RDS Instances", "provider": "AWS", "cost": 16200, "usage": "24 instances", "trend": 3.1 },
+    { "name": "Azure Blob", "provider": "Azure", "cost": 14800, "usage": "280 TB", "trend": -1.8 },
+    { "name": "Lambda Functions", "provider": "AWS", "cost": 12600, "usage": "45M invocations", "trend": 18.4 },
+    { "name": "Cloud CDN", "provider": "GCP", "cost": 11200, "usage": "890 TB egress", "trend": 25.6 },
+    { "name": "Azure AKS", "provider": "Azure", "cost": 9800, "usage": "3 clusters", "trend": 14.2 }
+  ],
+  "recommendations": [
+    { "id": "rec-1", "title": "Right-size EC2 instances in us-east-1", "category": "Compute", "impact": "High", "effort": "Low", "savings": 18500, "status": "open", "steps": ["Identify underutilized instances with <20% CPU", "Migrate to smaller instance types", "Validate performance after migration"] },
+    { "id": "rec-2", "title": "Delete orphaned EBS volumes", "category": "Storage", "impact": "Medium", "effort": "Low", "savings": 4200, "status": "open", "steps": ["List all unattached EBS volumes", "Verify no snapshots depend on them", "Delete confirmed orphans"] },
+    { "id": "rec-3", "title": "Purchase Reserved Instances for stable workloads", "category": "Compute", "impact": "High", "effort": "Medium", "savings": 12000, "status": "in_progress", "steps": ["Analyze 90-day usage patterns", "Identify stable baseline workloads", "Purchase 1-year RIs for qualifying instances"] },
+    { "id": "rec-4", "title": "Optimize GKE node pool autoscaling", "category": "Kubernetes", "impact": "High", "effort": "High", "savings": 8500, "status": "open", "steps": ["Review current autoscaler config", "Set appropriate min/max node counts", "Enable vertical pod autoscaling"] },
+    { "id": "rec-5", "title": "Migrate infrequent S3 data to Glacier", "category": "Storage", "impact": "Medium", "effort": "Low", "savings": 2800, "status": "done", "steps": ["Identify objects not accessed in 90 days", "Create lifecycle policy", "Monitor retrieval patterns"] },
+    { "id": "rec-6", "title": "Consolidate underused Azure SQL databases", "category": "Database", "impact": "Medium", "effort": "Medium", "savings": 3200, "status": "open", "steps": ["Audit database utilization metrics", "Identify consolidation candidates", "Plan migration and test"] }
+  ],
+  "anomalies": [
+    { "id": "anom-1", "service": "Lambda Functions", "detectedAt": "2026-03-12T14:32:00Z", "severity": "Critical", "spike": 340, "description": "Sudden 340% spike in Lambda invocations — potential infinite loop in event trigger.", "data": [10, 12, 11, 13, 12, 45, 48] },
+    { "id": "anom-2", "service": "Cloud CDN", "detectedAt": "2026-03-11T09:15:00Z", "severity": "High", "spike": 180, "description": "CDN egress costs jumped 180% — possible cache miss storm or DDoS.", "data": [20, 22, 21, 23, 42, 58, 60] },
+    { "id": "anom-3", "service": "EC2 Instances", "detectedAt": "2026-03-10T22:47:00Z", "severity": "Medium", "spike": 65, "description": "EC2 spend increased 65% in ap-southeast-1 — unauthorized instance provisioning suspected.", "data": [30, 32, 31, 33, 35, 50, 52] },
+    { "id": "anom-4", "service": "Azure Blob", "detectedAt": "2026-03-08T06:20:00Z", "severity": "High", "spike": 120, "description": "Blob storage transactions spiked 120% — large batch job may need optimization.", "data": [15, 14, 16, 15, 18, 33, 35] },
+    { "id": "anom-5", "service": "RDS Instances", "detectedAt": "2026-03-06T18:55:00Z", "severity": "Medium", "spike": 45, "description": "RDS IOPS charges increased 45% — query optimization recommended.", "data": [25, 26, 24, 27, 28, 38, 40] }
+  ],
+  "kubernetes": {
+    "clusters": [
+      { "name": "prod-us-east", "nodes": 24, "cpuUtil": 72, "memUtil": 68, "cost": 18500, "efficiency": 85 },
+      { "name": "prod-eu-west", "nodes": 16, "cpuUtil": 58, "memUtil": 52, "cost": 12800, "efficiency": 71 },
+      { "name": "staging-us", "nodes": 8, "cpuUtil": 34, "memUtil": 29, "cost": 6200, "efficiency": 48 }
+    ],
+    "namespaces": [
+      { "name": "api-gateway", "cluster": "prod-us-east", "cpuReq": "8 cores", "memReq": "32 GB", "cost": 4200, "waste": 12 },
+      { "name": "ml-pipeline", "cluster": "prod-us-east", "cpuReq": "16 cores", "memReq": "64 GB", "cost": 7800, "waste": 35 },
+      { "name": "frontend", "cluster": "prod-us-east", "cpuReq": "4 cores", "memReq": "16 GB", "cost": 2100, "waste": 8 },
+      { "name": "data-ingestion", "cluster": "prod-eu-west", "cpuReq": "12 cores", "memReq": "48 GB", "cost": 5600, "waste": 22 },
+      { "name": "monitoring", "cluster": "prod-eu-west", "cpuReq": "4 cores", "memReq": "16 GB", "cost": 1800, "waste": 45 },
+      { "name": "ci-cd", "cluster": "staging-us", "cpuReq": "6 cores", "memReq": "24 GB", "cost": 2800, "waste": 52 },
+      { "name": "testing", "cluster": "staging-us", "cpuReq": "4 cores", "memReq": "16 GB", "cost": 1600, "waste": 68 },
+      { "name": "auth-service", "cluster": "prod-eu-west", "cpuReq": "2 cores", "memReq": "8 GB", "cost": 980, "waste": 15 }
+    ]
+  },
+  "teams": [
+    { "name": "Platform Engineering", "department": "Engineering", "allocated": 85000, "actual": 92400, "variance": 8.7, "services": 18 },
+    { "name": "Data Science", "department": "Engineering", "allocated": 65000, "actual": 58200, "variance": -10.5, "services": 12 },
+    { "name": "Frontend", "department": "Engineering", "allocated": 35000, "actual": 33100, "variance": -5.4, "services": 8 },
+    { "name": "DevOps", "department": "Operations", "allocated": 48000, "actual": 52800, "variance": 10.0, "services": 22 },
+    { "name": "QA", "department": "Operations", "allocated": 22000, "actual": 19500, "variance": -11.4, "services": 6 },
+    { "name": "Security", "department": "Operations", "allocated": 30000, "actual": 28750, "variance": -4.2, "services": 10 }
+  ],
+  "unitEconomics": [
+    { "month": "Apr 2025", "costPerUser": 2.45, "costPerTransaction": 0.0032, "revenue": 890000, "margin": 74.2 },
+    { "month": "May 2025", "costPerUser": 2.38, "costPerTransaction": 0.0031, "revenue": 920000, "margin": 74.8 },
+    { "month": "Jun 2025", "costPerUser": 2.42, "costPerTransaction": 0.0033, "revenue": 950000, "margin": 74.4 },
+    { "month": "Jul 2025", "costPerUser": 2.50, "costPerTransaction": 0.0034, "revenue": 980000, "margin": 74.0 },
+    { "month": "Aug 2025", "costPerUser": 2.55, "costPerTransaction": 0.0035, "revenue": 1010000, "margin": 73.6 },
+    { "month": "Sep 2025", "costPerUser": 2.48, "costPerTransaction": 0.0033, "revenue": 1050000, "margin": 74.1 },
+    { "month": "Oct 2025", "costPerUser": 2.52, "costPerTransaction": 0.0034, "revenue": 1080000, "margin": 73.8 },
+    { "month": "Nov 2025", "costPerUser": 2.58, "costPerTransaction": 0.0036, "revenue": 1120000, "margin": 73.4 },
+    { "month": "Dec 2025", "costPerUser": 2.62, "costPerTransaction": 0.0037, "revenue": 1150000, "margin": 73.0 },
+    { "month": "Jan 2026", "costPerUser": 2.68, "costPerTransaction": 0.0038, "revenue": 1180000, "margin": 72.6 },
+    { "month": "Feb 2026", "costPerUser": 2.72, "costPerTransaction": 0.0039, "revenue": 1220000, "margin": 72.2 },
+    { "month": "Mar 2026", "costPerUser": 2.78, "costPerTransaction": 0.0040, "revenue": 1260000, "margin": 71.8 }
+  ],
+  "budgets": [
+    { "name": "Compute Budget", "limit": 130000, "spent": 120000, "forecast": 135000, "status": "At Risk", "owner": "Platform Engineering" },
+    { "name": "Storage Budget", "limit": 60000, "spent": 54000, "forecast": 58000, "status": "On Track", "owner": "Data Science" },
+    { "name": "Network Budget", "limit": 45000, "spent": 38000, "forecast": 42000, "status": "On Track", "owner": "DevOps" },
+    { "name": "K8s Budget", "limit": 40000, "spent": 47000, "forecast": 52000, "status": "Exceeded", "owner": "Platform Engineering" },
+    { "name": "Database Budget", "limit": 30000, "spent": 25750, "forecast": 28000, "status": "On Track", "owner": "Data Science" }
+  ],
+  "virtualTags": [
+    { "provider": "AWS", "rawKey": "aws:createdBy", "rawValue": "team-platform", "normalizedKey": "team", "normalizedValue": "Platform Engineering" },
+    { "provider": "AWS", "rawKey": "Environment", "rawValue": "prod", "normalizedKey": "environment", "normalizedValue": "Production" },
+    { "provider": "GCP", "rawKey": "gcp-project", "rawValue": "ml-training", "normalizedKey": "team", "normalizedValue": "Data Science" },
+    { "provider": "GCP", "rawKey": "env", "rawValue": "production", "normalizedKey": "environment", "normalizedValue": "Production" },
+    { "provider": "Azure", "rawKey": "department", "rawValue": "ops", "normalizedKey": "team", "normalizedValue": "DevOps" },
+    { "provider": "Azure", "rawKey": "ms-resource-usage", "rawValue": "staging", "normalizedKey": "environment", "normalizedValue": "Staging" },
+    { "provider": "AWS", "rawKey": "cost-center", "rawValue": "cc-frontend", "normalizedKey": "team", "normalizedValue": "Frontend" },
+    { "provider": "GCP", "rawKey": "app", "rawValue": "auth-svc", "normalizedKey": "service", "normalizedValue": "Auth Service" }
+  ],
+  "reports": [
+    { "name": "Weekly Cost Summary", "frequency": "Weekly", "recipients": ["cfo@company.com", "vp-eng@company.com"], "lastRun": "2026-03-10T08:00:00Z", "format": "PDF" },
+    { "name": "Monthly Chargeback Report", "frequency": "Monthly", "recipients": ["finance@company.com", "eng-leads@company.com", "ops@company.com"], "lastRun": "2026-03-01T06:00:00Z", "format": "CSV" },
+    { "name": "Anomaly Digest", "frequency": "Daily", "recipients": ["devops@company.com"], "lastRun": "2026-03-14T07:00:00Z", "format": "Slack" },
+    { "name": "Quarterly Executive Review", "frequency": "Quarterly", "recipients": ["ceo@company.com", "cfo@company.com", "cto@company.com", "vp-eng@company.com"], "lastRun": "2026-01-15T09:00:00Z", "format": "PDF" }
+  ],
+  "forecasting": {
+    "historical": [
+      { "month": "Oct 2025", "spend": 262700 },
+      { "month": "Nov 2025", "spend": 267500 },
+      { "month": "Dec 2025", "spend": 271500 },
+      { "month": "Jan 2026", "spend": 276700 },
+      { "month": "Feb 2026", "spend": 282500 },
+      { "month": "Mar 2026", "spend": 284750 }
+    ],
+    "forecast": {
+      "base": [
+        { "month": "Apr 2026", "spend": 292000, "lower": 285000, "upper": 299000 },
+        { "month": "May 2026", "spend": 298000, "lower": 288000, "upper": 308000 },
+        { "month": "Jun 2026", "spend": 305000, "lower": 292000, "upper": 318000 }
+      ],
+      "optimistic": [
+        { "month": "Apr 2026", "spend": 278000, "lower": 272000, "upper": 284000 },
+        { "month": "May 2026", "spend": 275000, "lower": 267000, "upper": 283000 },
+        { "month": "Jun 2026", "spend": 270000, "lower": 260000, "upper": 280000 }
+      ],
+      "pessimistic": [
+        { "month": "Apr 2026", "spend": 308000, "lower": 298000, "upper": 318000 },
+        { "month": "May 2026", "spend": 322000, "lower": 308000, "upper": 336000 },
+        { "month": "Jun 2026", "spend": 340000, "lower": 322000, "upper": 358000 }
+      ]
+    },
+    "drivers": [
+      { "service": "GKE Clusters", "impact": 8200, "direction": "up", "reason": "New ML workloads" },
+      { "service": "Lambda Functions", "impact": 4500, "direction": "up", "reason": "Event processing growth" },
+      { "service": "S3 Storage", "impact": -2100, "direction": "down", "reason": "Lifecycle policy savings" },
+      { "service": "EC2 Instances", "impact": 5800, "direction": "up", "reason": "Traffic growth" },
+      { "service": "Azure VMs", "impact": -1200, "direction": "down", "reason": "RI purchases" }
+    ]
+  },
+  "users": [
+    { "id": "usr-1", "name": "Alice Johnson", "email": "admin@finops.com", "role": "admin", "department": "Engineering", "status": "active", "createdAt": "2025-01-10T09:00:00Z", "lastLogin": "2026-03-24T08:00:00Z", "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=alice" },
+    { "id": "usr-2", "name": "Bob Smith", "email": "manager@finops.com", "role": "manager", "department": "Operations", "status": "active", "createdAt": "2025-02-15T10:00:00Z", "lastLogin": "2026-03-23T14:30:00Z", "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=bob" },
+    { "id": "usr-3", "name": "Carol White", "email": "analyst@finops.com", "role": "analyst", "department": "Finance", "status": "active", "createdAt": "2025-03-01T11:00:00Z", "lastLogin": "2026-03-22T09:15:00Z", "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=carol" },
+    { "id": "usr-4", "name": "David Brown", "email": "viewer@finops.com", "role": "viewer", "department": "Marketing", "status": "inactive", "createdAt": "2025-04-20T12:00:00Z", "lastLogin": "2026-02-10T16:00:00Z", "avatar": "https://api.dicebear.com/7.x/avataaars/svg?seed=david" }
+  ],
+  "tenants": [
+    { "id": "ten-1", "name": "Acme Corp", "plan": "Enterprise", "status": "active", "usersCount": 45, "createdAt": "2024-06-01T00:00:00Z", "adminEmail": "admin@acme.com", "region": "us-east-1", "monthlySpend": 142000 },
+    { "id": "ten-2", "name": "Globex Inc", "plan": "Pro", "status": "active", "usersCount": 22, "createdAt": "2024-09-15T00:00:00Z", "adminEmail": "admin@globex.com", "region": "eu-west-1", "monthlySpend": 87500 },
+    { "id": "ten-3", "name": "Initech LLC", "plan": "Starter", "status": "suspended", "usersCount": 8, "createdAt": "2025-01-20T00:00:00Z", "adminEmail": "admin@initech.com", "region": "ap-southeast-1", "monthlySpend": 12400 }
+  ],
+  "paymentReceipts": [
+    { "id": "rcpt-1", "vendor": "AWS", "amount": 68500, "currency": "USD", "date": "2026-03-01T00:00:00Z", "status": "paid", "invoiceNumber": "INV-AWS-2026-03", "description": "AWS Monthly Bill - March 2026", "category": "Compute", "downloadUrl": "/receipts/rcpt-1.pdf" },
+    { "id": "rcpt-2", "vendor": "GCP", "amount": 47300, "currency": "USD", "date": "2026-03-02T00:00:00Z", "status": "paid", "invoiceNumber": "INV-GCP-2026-03", "description": "GCP Monthly Bill - March 2026", "category": "Kubernetes", "downloadUrl": "/receipts/rcpt-2.pdf" },
+    { "id": "rcpt-3", "vendor": "Azure", "amount": 34800, "currency": "USD", "date": "2026-03-03T00:00:00Z", "status": "pending", "invoiceNumber": "INV-AZ-2026-03", "description": "Azure Monthly Bill - March 2026", "category": "Storage", "downloadUrl": "/receipts/rcpt-3.pdf" },
+    { "id": "rcpt-4", "vendor": "AWS", "amount": 62100, "currency": "USD", "date": "2026-02-01T00:00:00Z", "status": "paid", "invoiceNumber": "INV-AWS-2026-02", "description": "AWS Monthly Bill - Feb 2026", "category": "Compute", "downloadUrl": "/receipts/rcpt-4.pdf" },
+    { "id": "rcpt-5", "vendor": "GCP", "amount": 44600, "currency": "USD", "date": "2026-02-02T00:00:00Z", "status": "paid", "invoiceNumber": "INV-GCP-2026-02", "description": "GCP Monthly Bill - Feb 2026", "category": "Kubernetes", "downloadUrl": "/receipts/rcpt-5.pdf" }
+  ]
+}
