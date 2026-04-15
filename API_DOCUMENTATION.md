@@ -1,7 +1,7 @@
 # FinOps Dashboard — Complete API Documentation (78 Endpoints)
 
-> **Base URL:** `http://localhost:8000` (set via `VITE_API_BASE_URL` in `.env`)  
-> **Mock Mode:** `VITE_USE_MOCK=true` intercepts all calls and returns `fakedata.json` slices  
+> **Base URL:** `http://localhost:8001` (set via `VITE_API_BASE_URL` in `.env`)
+> **Mock Mode:** `VITE_USE_MOCK=true` intercepts all calls and returns `fakedata.json` slices
 > **Auth Header:** `Authorization: Bearer <token>` (all modules except auth)  
 > **Content-Type:** `application/json`
 
@@ -1190,7 +1190,7 @@
 
 ---
 
-## Total API Count: 78
+## Total API Count: 123
 
 | Module | Count |
 |--------|-------|
@@ -1210,4 +1210,4 @@
 | Payment Receipts | 6 |
 | Tenant Management | 6 |
 | User Management | 8 |
-| **Total** | **78** |
+| **Total** | **123** |
