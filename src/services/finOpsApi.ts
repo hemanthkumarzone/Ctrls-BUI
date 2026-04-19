@@ -7,16 +7,87 @@ import type {
 
 // ─── Auth ─────────────────────────────────────────────────────────────────────
 export const authApi = {
-  login: (email: string, password: string) =>
-    apiClient.post("/auth/login", { email, password }).then((r) => r.data),
+  // User Registration for existing organization
+  register: (email: string, password: string, orgSlug: string, orgAdminName: string, role: string = 'viewer') =>
+    apiClient.post("/auth/register", {
+      email,
+      password,
+      org_slug: orgSlug,
+      org_admin_name: orgAdminName,
+      role
+    }).then((r) => r.data),
+
+  // Organization Registration with Admin
+  registerOrg: (orgName: string, orgSlug: string, orgPlan: string, adminEmail: string, adminPassword: string, adminName: string) =>
+    apiClient.post("/tenants/register-org", {
+      org_name: orgName,
+      org_slug: orgSlug,
+      org_plan: orgPlan,
+      admin_email: adminEmail,
+      admin_password: adminPassword,
+      admin_name: adminName
+    }).then((r) => r.data),
+
+  // User Login
+  login: (email: string, password: string) => {
+    const formData = new URLSearchParams();
+    formData.append('username', email);
+    formData.append('password', password);
+    return apiClient.post("/auth/login", formData, {
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+    }).then((r) => r.data);
+  },
+
+  // User Logout
   logout: () => apiClient.post("/auth/logout").then((r) => r.data),
-  refreshToken: () => apiClient.post("/auth/refresh-token").then((r) => r.data),
-  register: (payload: { email: string; password: string; name: string }) =>
-    apiClient.post("/auth/register", payload).then((r) => r.data),
-  verifyEmail: (token: string) =>
-    apiClient.post("/auth/verify-email", { token }).then((r) => r.data),
-  resetPassword: (email: string) =>
-    apiClient.post("/auth/reset-password", { email }).then((r) => r.data),
+
+  // Refresh Token
+  refreshToken: (refreshToken: string) => 
+    apiClient.post("/auth/refresh", { refresh_token: refreshToken }).then((r) => r.data),
+};
+
+// ─── User Management ──────────────────────────────────────────────────────────
+export const userApi = {
+  // Create User (Admin Only)
+  createUser: (userData: { email: string; password: string; role: string; tenant_id: string }) =>
+    apiClient.post("/user-operations/create-user", userData).then((r) => r.data),
+
+  // Get All Users
+  getUsers: () => apiClient.get("/user-operations/users").then((r) => r.data),
+
+  // Delete User
+  deleteUser: (userId: string) => apiClient.delete(`/user-operations/users/${userId}`).then((r) => r.data),
+};
+
+// ─── Tenant Management ────────────────────────────────────────────────────────
+export const tenantApi = {
+  // Create Organization with Admin
+  registerOrg: (data: { org_name: string; org_slug: string; org_plan: string; admin_email: string; admin_password: string; admin_name: string }) =>
+    apiClient.post("/tenants/register-org", data).then((r) => r.data),
+
+  // Create Organization (No Admin)
+  createTenant: (data: { name: string; slug: string; plan: string }) =>
+    apiClient.post("/tenants/", data).then((r) => r.data),
+
+  // Get All Organizations
+  getTenants: (skip?: number, limit?: number) => 
+    apiClient.get("/tenants/", { params: { skip, limit } }).then((r) => r.data),
+
+  // Get Organization by ID
+  getTenantById: (tenantId: string) => 
+    apiClient.get(`/tenants/${tenantId}`).then((r) => r.data),
+
+  // Get Organization by Slug
+  getTenantBySlug: (slug: string) => 
+    apiClient.get(`/tenants/by-slug/${slug}`).then((r) => r.data),
+
+  // Update Organization
+  updateTenant: (tenantId: string, data: { name?: string; plan?: string; is_active?: boolean; metadata_?: Record<string, any> }) =>
+    apiClient.put(`/tenants/${tenantId}`, data).then((r) => r.data),
+
+  // Delete Organization
+  deleteTenant: (tenantId: string) => 
+    apiClient.delete(`/tenants/${tenantId}`).then((r) => r.data),
 };
 
 // ─── Dashboard ────────────────────────────────────────────────────────────────

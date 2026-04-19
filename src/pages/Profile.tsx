@@ -88,8 +88,8 @@ export const ProfilePage: React.FC = () => {
     fileInputRef.current?.click();
   };
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     navigate('/login');
   };
 
