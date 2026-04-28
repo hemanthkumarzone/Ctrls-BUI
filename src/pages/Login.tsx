@@ -122,12 +122,16 @@ export const LoginPage: React.FC = () => {
               </div>
             </div>
 
-            <Link to="/signup">
+            <Link to="/signup"
+            onClick={(e) => e.preventDefault()}
+            className="pointer-events-none"
+            >
               <Button
-                variant="outline"
-                className="w-full border-slate-600 text-white hover:bg-slate-700"
-              >
-                Create Account
+                  variant="outline"
+                  className="w-full border-slate-600 text-white hover:bg-slate-700 pointer-events-none opacity-50"
+                  // disabled
+                >
+                  Create Account
               </Button>
             </Link>
 
