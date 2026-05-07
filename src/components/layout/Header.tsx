@@ -23,8 +23,8 @@ export function Header() {
   const { notifications, removeNotification, clearAll } = useNotification();
   const unreadCount = notifications.length;
 
-  const handleLogout = async () => {
-    await logout();
+  const handleLogout = () => {
+    logout();
     navigate("/login");
   };
 

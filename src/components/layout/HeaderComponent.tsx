@@ -24,8 +24,8 @@ export const HeaderComponent: React.FC<HeaderProps> = ({ onMenuClick }) => {
   const { notifications } = useNotification();
   const unreadCount = notifications.length;
 
-  const handleLogout = async () => {
-    await logout();
+  const handleLogout = () => {
+    logout();
     navigate('/login');
   };
 

@@ -1,25 +1,33 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { authApi } from '@/services/finOpsApi';
 
 export interface User {
   id: string;
   email: string;
-  role: 'owner' | 'admin' | 'viewer';
-  is_active: boolean;
-  tenant_id: string;
-  created_at: string;
-  updated_at: string;
+  name: string;
+  role: 'admin' | 'manager' | 'analyst' | 'viewer';
+  avatar?: string;
+  department?: string;
+  createdAt?: string;
 }
 
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
-  login: (email: string, password: string) => Promise<void>;
-  logout: () => Promise<void>;
-  refreshToken: () => Promise<void>;
-  register: (email: string, password: string, orgSlug: string, orgAdminName: string, role?: 'viewer' | 'admin' | 'owner') => Promise<void>;
-  registerOrg: (orgName: string, orgSlug: string, orgPlan: string, adminEmail: string, adminPassword: string, adminName: string) => Promise<void>;
+
+  // 🔥 UPDATED SIGNATURE
+  login: (email: string, password: string, username?: string) => Promise<void>;
+
+  signup: (
+    email: string,
+    password: string,
+    name: string,
+    role?: User['role'],
+    avatar?: string
+  ) => Promise<void>;
+
+  logout: () => void;
   isAuthenticated: boolean;
+  updateProfile: (updates: Partial<User>) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -28,82 +36,58 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Initialize auth from localStorage
+  // ✅ Load from localStorage
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
-    const storedToken = localStorage.getItem('access_token');
-    if (storedUser && storedToken) {
+    if (storedUser) {
       try {
         setUser(JSON.parse(storedUser));
       } catch (error) {
         console.error('Failed to parse stored user:', error);
-        localStorage.removeItem('user');
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('refresh_token');
       }
     }
     setIsLoading(false);
   }, []);
 
-  const login = async (email: string, password: string) => {
+  const determineRoleFromEmail = (email: string): User['role'] => {
+    const normalized = email.toLowerCase();
+    if (normalized.includes('admin')) return 'admin';
+    if (normalized.includes('manager')) return 'manager';
+    if (normalized.includes('analyst')) return 'analyst';
+    return 'viewer';
+  };
+
+  // 🔥 FIXED LOGIN
+  const login = async (
+    email: string,
+    password: string,
+    username?: string
+  ) => {
     setIsLoading(true);
-    try {
-      const data = await authApi.login(email, password);
-      
-      // Store tokens and user
-      localStorage.setItem('access_token', data.access_token);
-      localStorage.setItem('refresh_token', data.refresh_token);
-      localStorage.setItem('user', JSON.stringify(data.user));
-      
-      setUser(data.user);
-    } catch (error) {
-      throw error;
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
-  const logout = async () => {
     try {
-      await authApi.logout();
-    } catch (error) {
-      console.error('Logout API call failed:', error);
-    } finally {
-      // Always clear local storage regardless of API call success
-      setUser(null);
-      localStorage.removeItem('user');
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('refresh_token');
-    }
-  };
+      await new Promise(resolve => setTimeout(resolve, 1000));
 
-  const refreshToken = async () => {
-    try {
-      const refreshTokenValue = localStorage.getItem('refresh_token');
-      if (!refreshTokenValue) {
-        throw new Error('No refresh token available');
+      if (!email || !password) {
+        throw new Error('Email and password required');
       }
 
-      const data = await authApi.refreshToken(refreshTokenValue);
-      
-      // Update tokens and user
-      localStorage.setItem('access_token', data.access_token);
-      localStorage.setItem('refresh_token', data.refresh_token);
-      localStorage.setItem('user', JSON.stringify(data.user));
-      
-      setUser(data.user);
-    } catch (error) {
-      // If refresh fails, logout
-      await logout();
-      throw error;
-    }
-  };
+      const mockUser: User = {
+        id: Math.random().toString(36).substr(2, 9),
+        email,
 
-  const register = async (email: string, password: string, orgSlug: string, orgAdminName: string, role: 'viewer' | 'admin' | 'owner' = 'viewer') => {
-    setIsLoading(true);
-    try {
-      const data = await authApi.register(email, password, orgSlug, orgAdminName, role);
-      setUser(data);
+        // ✅ USE USERNAME FIRST
+        name: username?.trim() || email.split('@')[0],
+
+        role: determineRoleFromEmail(email),
+        avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}`,
+        department: 'Finance',
+        createdAt: new Date().toISOString(),
+      };
+
+      setUser(mockUser);
+      localStorage.setItem('user', JSON.stringify(mockUser));
+
     } catch (error) {
       throw error;
     } finally {
@@ -111,14 +95,52 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const registerOrg = async (orgName: string, orgSlug: string, orgPlan: string, adminEmail: string, adminPassword: string, adminName: string) => {
+  const signup = async (
+    email: string,
+    password: string,
+    name: string,
+    role: User['role'] = 'viewer',
+    avatar?: string
+  ) => {
     setIsLoading(true);
+
     try {
-      await authApi.registerOrg(orgName, orgSlug, orgPlan, adminEmail, adminPassword, adminName);
+      await new Promise(resolve => setTimeout(resolve, 1500));
+
+      if (!email || !password || !name) {
+        throw new Error('All fields are required');
+      }
+
+      const newUser: User = {
+        id: Math.random().toString(36).substr(2, 9),
+        email,
+        name,
+        role,
+        avatar: avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}`,
+        department: 'New Department',
+        createdAt: new Date().toISOString(),
+      };
+
+      setUser(newUser);
+      localStorage.setItem('user', JSON.stringify(newUser));
+
     } catch (error) {
       throw error;
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const logout = () => {
+    setUser(null);
+    localStorage.removeItem('user');
+  };
+
+  const updateProfile = (updates: Partial<User>) => {
+    if (user) {
+      const updatedUser = { ...user, ...updates };
+      setUser(updatedUser);
+      localStorage.setItem('user', JSON.stringify(updatedUser));
     }
   };
 
@@ -128,11 +150,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         user,
         isLoading,
         login,
+        signup,
         logout,
-        refreshToken,
-        register,
-        registerOrg,
         isAuthenticated: !!user,
+        updateProfile,
       }}
     >
       {children}
@@ -142,7 +163,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error('useAuth must be used within AuthProvider');
   }
   return context;
