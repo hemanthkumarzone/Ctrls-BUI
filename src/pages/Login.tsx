@@ -51,7 +51,14 @@ export default function LoginPage() {
 
     console.log("Login + Email success");
 
-    navigate("/neon");
+const params = new URLSearchParams(window.location.search);
+const redirectUrl = params.get("redirect");
+
+if (redirectUrl) {
+  window.location.href = redirectUrl;
+} else {
+  navigate("/neon");
+}
   } catch (err: any) {
     alert(err.message || "Login failed");
   }

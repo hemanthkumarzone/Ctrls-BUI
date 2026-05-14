@@ -34,6 +34,7 @@ import PaymentReceipts from "@/pages/PaymentReceipts";
 import NotFound from "@/pages/NotFound";
 
 import NeonDashboard from "@/pages/NeonDashboard";
+import UserDashboard from "@/pages/UserDashboard";
 
 const queryClient = new QueryClient();
 
@@ -67,6 +68,14 @@ const App = () => (
                       </ProtectedRoute>
                     }
                   />
+                  <Route
+  path="/user-dashboard"
+  element={
+    <ProtectedRoute>
+      <UserDashboard />
+    </ProtectedRoute>
+  }
+/>
 
                   {/* 🔐 Main App with Layout */}
                   <Route
