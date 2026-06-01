@@ -35,6 +35,11 @@ import NotFound from "@/pages/NotFound";
 
 import NeonDashboard from "@/pages/NeonDashboard";
 import UserDashboard from "@/pages/UserDashboard";
+import PlansBilling from "./pages/PlansBilling";
+import { SubscriptionProvider } from "@/context/SubscriptionContext";
+import ContactSales from "./pages/ContactSales";
+import Billing from "./pages/Billing";
+
 
 const queryClient = new QueryClient();
 
@@ -42,12 +47,14 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider>
       <AuthProvider>
-        <NotificationProvider>
-          <TooltipProvider>
-            <AppProvider>
-              <Toaster />
-              <Sonner />
-              <NotificationsContainer />
+        
+          <NotificationProvider>
+            <TooltipProvider>
+              <SubscriptionProvider>
+              <AppProvider>
+                <Toaster />
+                <Sonner />
+                <NotificationsContainer />
 
               <BrowserRouter>
                 <Routes>
@@ -97,11 +104,62 @@ const App = () => (
                     <Route path="anomalies" element={<Anomalies />} />
                     <Route path="reports" element={<Reports />} />
                     <Route path="virtual-tags" element={<VirtualTags />} />
-                    <Route path="cost-allocation" element={<CostAllocation />} />
+                    <Route
+  path="cost-allocation"
+  element={
+    <ProtectedRoute
+      allowedPlans={[
+        "platform-plus",
+        "enterprise",
+        "datacenter",
+      ]}
+    >
+      <CostAllocation />
+    </ProtectedRoute>
+  }
+/>
                     <Route path="unit-economics" element={<UnitEconomics />} />
-                    <Route path="forecasting" element={<Forecasting />} />
-                    <Route path="budgeting" element={<Budgeting />} />
-                    <Route path="payment-receipts" element={<PaymentReceipts />} />
+                    <Route
+  path="forecasting"
+  element={
+    <ProtectedRoute
+      allowedPlans={[
+        "platform",
+        "platform-plus",
+        "enterprise",
+        "datacenter",
+      ]}
+    >
+      <Forecasting />
+    </ProtectedRoute>
+  }
+/>
+                    <Route
+  path="budgeting"
+  element={
+    <ProtectedRoute
+      allowedPlans={[
+        "platform",
+        "platform-plus",
+        "enterprise",
+        "datacenter",
+      ]}
+    >
+      <Budgeting />
+    </ProtectedRoute>
+  }
+/>
+                    <Route
+  path="payment-receipts"
+  element={
+    <ProtectedRoute>
+      <PaymentReceipts />
+    </ProtectedRoute>
+  }
+/>
+                    <Route path="/plans-billing" element={<PlansBilling />} />
+                    <Route path="/contact-sales" element={<ContactSales />} />
+                    <Route path="/billing" element={<Billing />} />
                     <Route path="*" element={<NotFound />} />
                   </Route>
 
@@ -109,7 +167,9 @@ const App = () => (
               </BrowserRouter>
 
             </AppProvider>
+            </SubscriptionProvider>
           </TooltipProvider>
+          
         </NotificationProvider>
       </AuthProvider>
     </ThemeProvider>

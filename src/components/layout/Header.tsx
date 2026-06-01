@@ -15,6 +15,7 @@ import {
 import { useNotification } from "@/context/NotificationContext";
 import { User, Settings, LogOut } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useSubscription } from "@/context/SubscriptionContext";
 
 export function Header() {
   const navigate = useNavigate();
@@ -22,6 +23,25 @@ export function Header() {
   const { user, logout } = useAuth();
   const { notifications, removeNotification, clearAll } = useNotification();
   const unreadCount = notifications.length;
+  const getRemainingDays = () => {
+
+  if (!trialEndsAt) return 0;
+
+  const now = new Date();
+
+  const end = new Date(trialEndsAt);
+
+  const diff =
+    end.getTime() - now.getTime();
+
+  return Math.max(
+    Math.ceil(
+      diff / (1000 * 60 * 60 * 24)
+    ),
+    0
+  );
+};
+  const { selectedPlan,subscriptionStatus,trialEndsAt,} = useSubscription();
 
   const handleLogout = () => {
     logout();
@@ -43,6 +63,17 @@ export function Header() {
         </button>
       </div>
       <div className="flex items-center gap-2">
+       {
+  subscriptionStatus === "trial" && (
+    <div className="px-3 py-1 rounded-full bg-lime-500/20 text-lime-400 text-xs font-medium border border-lime-500/30">
+
+      {selectedPlan} Trial •{" "}
+
+      {getRemainingDays()} days left
+
+    </div>
+  )
+}
         {/* Notifications */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

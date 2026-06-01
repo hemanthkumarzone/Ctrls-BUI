@@ -1,15 +1,20 @@
+
+import AuthLayout from "@/components/layout/AuthLayout";
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { useAuth } from "@/context/AuthContext"; // 🔥 IMPORTANT
+import { useAuth } from "@/context/AuthContext";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {Card,CardContent,CardHeader,CardTitle,} from "@/components/ui/card";
+
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 
 export default function LoginPage() {
+
   const navigate = useNavigate();
-  const { login, isLoading } = useAuth(); // 🔥 GET LOGIN FUNCTION
+
+  const { login, isLoading } = useAuth();
 
   const [form, setForm] = useState({
     username: "",
@@ -17,139 +22,324 @@ export default function LoginPage() {
     password: "",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+
     setForm((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
     }));
+
   };
 
-  // 🔥 UPDATED SUBMIT
-  const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
+  const handleSubmit = async (
+    e: React.FormEvent
+  ) => {
 
-  if (!form.email || !form.password) {
-    alert("Email and password are required");
-    return;
-  }
+    e.preventDefault();
 
-  try {
-    // ✅ PASS USERNAME HERE
-    await login(form.email, form.password, form.username);
+    if (!form.email || !form.password) {
+      alert("Email and password are required");
+      return;
+    }
 
-    // ✅ CALL EMAIL API
-    await fetch("http://127.0.0.1:8001/email/send-email", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: form.email,
-        username: form.username || form.email.split("@")[0],
-      }),
-    });
+    try {
 
-    console.log("Login + Email success");
+      const response = await login(
+        form.email,
+        form.password,
+        form.username
+      );
+      /* =========================
+   2FA LOGIN FLOW
+========================= */
 
-const params = new URLSearchParams(window.location.search);
-const redirectUrl = params.get("redirect");
+if (response?.requires_2fa) {
 
-if (redirectUrl) {
-  window.location.href = redirectUrl;
-} else {
-  navigate("/neon");
+  localStorage.setItem(
+    "verification_email",
+    form.email
+  );
+
+  localStorage.setItem(
+    "login_2fa",
+    "true"
+  );
+
+
+  alert("OTP sent to your email");
+
+  navigate("/verify-email");
+
+  return;
 }
-  } catch (err: any) {
-    alert(err.message || "Login failed");
-  }
-};
+
+      
+
+      console.log("Login + Email success");
+
+      const params = new URLSearchParams(
+        window.location.search
+      );
+
+      const redirectUrl = params.get("redirect");
+
+      if (redirectUrl) {
+
+        window.location.href = redirectUrl;
+
+      } else {
+
+        navigate("/neon");
+
+      }
+
+    } catch (err: any) {
+
+      alert(err.message || "Login failed");
+
+    }
+  };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background relative">
 
-      {/* LOGO */}
-      <div className="absolute top-6 left-6 text-xl font-semibold">
-        CtrlS
-      </div>
+    <AuthLayout>
 
-      {/* CARD */}
-      <Card className="w-[90%] max-w-[380px] finops-card-hover">
+      <div
+        className="
+          relative
+          w-full
+          min-h-[calc(100vh-140px)]
+          flex
+          items-center
+          justify-center
+          overflow-hidden
+          px-4
+          py-10
+        "
+      >
 
-        <CardHeader>
-          <CardTitle className="text-center text-2xl">
-            Log In
-          </CardTitle>
-        </CardHeader>
+        {/* BACKGROUND DOTS */}
+        <div className="absolute inset-0 dot-pattern opacity-20" />
 
-        <CardContent>
-          <form
-            onSubmit={handleSubmit}
-            className="space-y-5"
-            autoComplete="off"
-          >
+        {/* SUBTLE GREEN GLOW */}
+        <div className="dashboard-glow opacity-10" />
 
-            {/* USERNAME (optional for UI only) */}
-            <div className="space-y-2">
-              <Label>Username</Label>
-              <Input
-                name="username"
-                value={form.username}
-                onChange={handleChange}
-                placeholder="Enter your username"
-                autoComplete="username"
+        {/* LOGIN CARD */}
+        <Card
+          className="
+            relative
+            z-10
+            w-full
+            max-w-[350px]
+            border
+            border-[#77B900]/20
+            bg-[#0B1208]/92
+            backdrop-blur-xl
+            rounded-[22px]
+            shadow-[0_0_30px_rgba(119,185,0,0.10)]
+          "
+        >
+
+          {/* HEADER */}
+          <CardHeader className="space-y-3 pb-4">
+
+            {/* LOGO */}
+            <div className="flex justify-center">
+
+              <img
+                src="/Kore Value Logo.png"
+                alt="logo"
+                className="
+                  w-[56px]
+                  h-[56px]
+                  object-contain
+                  glow-green
+                "
               />
+
             </div>
 
-            {/* EMAIL */}
-            <div className="space-y-2">
-              <Label>Email Address</Label>
-              <Input
-                type="email"
-                name="email"
-                value={form.email}
-                onChange={handleChange}
-                placeholder="Enter your email"
-                autoComplete="email"
-              />
-            </div>
+            {/* TITLE */}
+            <CardTitle
+              className="
+                text-center
+                text-[30px]
+                font-semibold
+                text-white
+              "
+            >
+              Welcome Back
+            </CardTitle>
 
-            {/* PASSWORD */}
-            <div className="space-y-2">
-              <Label>Password</Label>
-              <Input
-                type="password"
-                name="password"
-                value={form.password}
-                onChange={handleChange}
-                placeholder="Enter your password"
-                autoComplete="new-password"
-              />
+            {/* SUBTITLE */}
+            <p
+              className="
+                text-center
+                text-[#A3A3A3]
+                text-sm
+                leading-[22px]
+              "
+            >
+              Sign in to continue to your cloud platform
+            </p>
+
+          </CardHeader>
+
+          {/* CONTENT */}
+          <CardContent>
+
+            <form
+              onSubmit={handleSubmit}
+              className="space-y-4"
+              autoComplete="off"
+            >
+
+              {/* USERNAME */}
+              <div className="space-y-2">
+
+                <Label className="text-[#D1D5DB]">
+                  Username
+                </Label>
+
+                <Input
+                  name="username"
+                  value={form.username}
+                  onChange={handleChange}
+                  placeholder="Enter your username"
+                  autoComplete="username"
+                  className="
+                    h-[44px]
+                    bg-black/40
+                    border-[#77B900]/15
+                    focus:border-[#77B900]
+                    text-white
+                  "
+                />
+
+              </div>
+
+              {/* EMAIL */}
+              <div className="space-y-2">
+
+                <Label className="text-[#D1D5DB]">
+                  Email Address
+                </Label>
+
+                <Input
+                  type="email"
+                  name="email"
+                  value={form.email}
+                  onChange={handleChange}
+                  placeholder="Enter your email"
+                  autoComplete="email"
+                  className="
+                    h-[44px]
+                    bg-black/40
+                    border-[#77B900]/15
+                    focus:border-[#77B900]
+                    text-white
+                  "
+                />
+
+              </div>
+
+              {/* PASSWORD */}
+              <div className="space-y-2">
+
+                <Label className="text-[#D1D5DB]">
+                  Password
+                </Label>
+
+                <Input
+                  type="password"
+                  name="password"
+                  value={form.password}
+                  onChange={handleChange}
+                  placeholder="Enter your password"
+                  autoComplete="new-password"
+                  className="
+                    h-[44px]
+                    bg-black/40
+                    border-[#77B900]/15
+                    focus:border-[#77B900]
+                    text-white
+                  "
+                />
+
+                <Link
+                  to="/forgot-password"
+                  className="
+                    text-right
+                    block
+                    text-sm
+                    text-[#77B900]
+                    mt-1
+                    hover:text-[#9fdc00]
+                    transition
+                  "
+                >
+                  Forgot Password?
+                </Link>
+
+              </div>
+
+              {/* BUTTON */}
+              <Button
+                type="submit"
+                disabled={isLoading}
+                className="
+                  w-full
+                  h-[46px]
+                  bg-[#77B900]
+                  hover:bg-[#8ED000]
+                  text-black
+                  font-semibold
+                  rounded-xl
+                  transition-all
+                  duration-300
+                  hover:shadow-[0_0_20px_rgba(119,185,0,0.35)]
+                "
+              >
+                {isLoading
+                  ? "Signing in..."
+                  : "Sign In"}
+              </Button>
+
+            </form>
+
+            {/* FOOTER */}
+            <p
+              className="
+                text-center
+                text-sm
+                text-[#A3A3A3]
+                mt-5
+              "
+            >
+              New to CtrlS?
 
               <Link
-                to="/forgot-password"
-                className="text-right block text-sm text-primary mt-1"
+                to="/signup"
+                className="
+                  text-[#77B900]
+                  ml-1
+                  hover:text-[#9fdc00]
+                  transition
+                "
               >
-                Forgot Password?
+                Create Account →
               </Link>
-            </div>
 
-            {/* BUTTON */}
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading ? "Signing in..." : "Sign In"}
-            </Button>
+            </p>
 
-          </form>
+          </CardContent>
 
-          {/* FOOTER */}
-          <p className="text-center text-sm text-muted-foreground mt-5">
-            New to CtrlS?
-            <Link to="/signup" className="text-primary ml-1">
-              Create Account →
-            </Link>
-          </p>
+        </Card>
 
-        </CardContent>
-      </Card>
-    </div>
+      </div>
+
+    </AuthLayout>
   );
 }

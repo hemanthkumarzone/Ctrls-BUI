@@ -1,148 +1,272 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+} from "react";
+
+import {
+  loginUser,
+  signupUser,
+} from "@/services/authService";
+
+/*USER INTERFACE*/
 
 export interface User {
   id: string;
   email: string;
   name: string;
-  role: 'admin' | 'manager' | 'analyst' | 'viewer';
+  role: "admin" | "manager" | "analyst" | "viewer";
   avatar?: string;
   department?: string;
   createdAt?: string;
 }
 
+/* =========================
+   AUTH CONTEXT TYPE
+========================= */
+
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
 
-  // 🔥 UPDATED SIGNATURE
-  login: (email: string, password: string, username?: string) => Promise<void>;
-
-  signup: (
+  login: (
     email: string,
     password: string,
-    name: string,
-    role?: User['role'],
-    avatar?: string
-  ) => Promise<void>;
+    username?: string
+  ) => Promise<any>;
+
+  signup: (
+  username: string,
+  companyName: string,
+  email: string,
+  password: string,
+  confirmPassword: string,
+) => Promise<void>;
 
   logout: () => void;
+
   isAuthenticated: boolean;
-  updateProfile: (updates: Partial<User>) => void;
+
+  updateProfile: (
+    updates: Partial<User>
+  ) => void;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+/* =========================
+   CONTEXT
+========================= */
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+const AuthContext = createContext<
+  AuthContextType | undefined
+>(undefined);
 
-  // ✅ Load from localStorage
+/* =========================
+   PROVIDER
+========================= */
+
+export const AuthProvider: React.FC<{
+  children: React.ReactNode;
+}> = ({ children }) => {
+
+  const [user, setUser] =
+    useState<User | null>(null);
+
+  const [isLoading, setIsLoading] =
+    useState(true);
+
+  /* =========================
+     LOAD USER FROM STORAGE
+  ========================= */
+
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
+    const storedUser =
+      localStorage.getItem("user");
+
+    const token =
+      localStorage.getItem("access_token");
+
+    if (storedUser && token) {
       try {
         setUser(JSON.parse(storedUser));
       } catch (error) {
-        console.error('Failed to parse stored user:', error);
+        console.error(
+          "Failed to parse stored user:",
+          error
+        );
       }
     }
+
     setIsLoading(false);
   }, []);
 
-  const determineRoleFromEmail = (email: string): User['role'] => {
-    const normalized = email.toLowerCase();
-    if (normalized.includes('admin')) return 'admin';
-    if (normalized.includes('manager')) return 'manager';
-    if (normalized.includes('analyst')) return 'analyst';
-    return 'viewer';
-  };
+  /* =========================
+     LOGIN
+  ========================= */
 
-  // 🔥 FIXED LOGIN
   const login = async (
     email: string,
     password: string,
     username?: string
   ) => {
+
     setIsLoading(true);
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
 
-      if (!email || !password) {
-        throw new Error('Email and password required');
-      }
+      const response = await loginUser({
 
-      const mockUser: User = {
-        id: Math.random().toString(36).substr(2, 9),
-        email,
+  email,
+  password,
+  username,
 
-        // ✅ USE USERNAME FIRST
-        name: username?.trim() || email.split('@')[0],
+});
 
-        role: determineRoleFromEmail(email),
-        avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}`,
-        department: 'Finance',
-        createdAt: new Date().toISOString(),
-      };
+/* =========================
+   2FA REQUIRED
+========================= */
 
-      setUser(mockUser);
-      localStorage.setItem('user', JSON.stringify(mockUser));
+if (response.requires_2fa) {
 
+  return response;
+
+}
+
+/* =========================
+   NORMAL LOGIN
+========================= */
+
+const loggedInUser: User = {
+
+  id: response.user.id,
+  email: response.user.email,
+  name: response.user.username,
+  role:
+    response.user.role as User["role"],
+
+};
+
+      /* SAVE TOKEN */
+
+      localStorage.setItem(
+        "access_token",
+        response.access_token
+      );
+
+      /* SAVE USER */
+
+      localStorage.setItem(
+        "user",
+        JSON.stringify(loggedInUser)
+      );
+
+      /* UPDATE STATE */
+
+      setUser(loggedInUser);
+      return response;
     } catch (error) {
+      console.error("Login failed:", error);
       throw error;
+
     } finally {
       setIsLoading(false);
     }
   };
+
+  /* =========================
+     SIGNUP
+  ========================= */
 
   const signup = async (
-    email: string,
-    password: string,
-    name: string,
-    role: User['role'] = 'viewer',
-    avatar?: string
-  ) => {
-    setIsLoading(true);
+  username: string,
+  companyName: string,
+  email: string,
+  password: string,
+  confirm_password: string,
+) => {
 
-    try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
+  setIsLoading(true);
 
-      if (!email || !password || !name) {
-        throw new Error('All fields are required');
-      }
+  try {
 
-      const newUser: User = {
-        id: Math.random().toString(36).substr(2, 9),
-        email,
-        name,
-        role,
-        avatar: avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${email}`,
-        department: 'New Department',
-        createdAt: new Date().toISOString(),
-      };
+    const response = await signupUser({
+      username,
+      email,
+      password,
+      confirm_password,
+      company_name: companyName,
+    });
 
-      setUser(newUser);
-      localStorage.setItem('user', JSON.stringify(newUser));
+    const newUser: User = {
+      id: response.id,
+      email: response.email,
+      name: response.username,
+      role: response.role as User["role"],
+    };
 
-    } catch (error) {
-      throw error;
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    /* SAVE USER */
+
+    localStorage.setItem(
+      "user",
+      JSON.stringify(newUser)
+    );
+
+    /* UPDATE STATE */
+
+    setUser(newUser);
+
+  } catch (error) {
+
+    console.error("Signup failed:", error);
+
+    throw error;
+
+  } finally {
+
+    setIsLoading(false);
+  }
+};
+  /* =========================
+     LOGOUT
+  ========================= */
 
   const logout = () => {
+
     setUser(null);
-    localStorage.removeItem('user');
+
+    localStorage.removeItem("user");
+
+    localStorage.removeItem(
+      "access_token"
+    );
   };
 
-  const updateProfile = (updates: Partial<User>) => {
-    if (user) {
-      const updatedUser = { ...user, ...updates };
-      setUser(updatedUser);
-      localStorage.setItem('user', JSON.stringify(updatedUser));
-    }
+  /* =========================
+     UPDATE PROFILE
+  ========================= */
+
+  const updateProfile = (
+    updates: Partial<User>
+  ) => {
+
+    if (!user) return;
+
+    const updatedUser = {
+      ...user,
+      ...updates,
+    };
+
+    setUser(updatedUser);
+
+    localStorage.setItem(
+      "user",
+      JSON.stringify(updatedUser)
+    );
   };
+
+  /* =========================
+     PROVIDER RETURN
+  ========================= */
 
   return (
     <AuthContext.Provider
@@ -161,10 +285,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   );
 };
 
+/* =========================
+   CUSTOM HOOK
+========================= */
+
 export const useAuth = () => {
+
   const context = useContext(AuthContext);
+
   if (!context) {
-    throw new Error('useAuth must be used within AuthProvider');
+    throw new Error(
+      "useAuth must be used within AuthProvider"
+    );
   }
+
   return context;
 };

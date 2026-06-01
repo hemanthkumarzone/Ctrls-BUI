@@ -6,72 +6,79 @@ import { formatCurrency } from "@/utils/format";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { Download, Eye, Receipt } from "lucide-react";
+import {
+  paymentReceiptService
+} from "@/services/paymentReceiptService";
+
+import {
+  useEffect
+} from "react";
 
 export default function PaymentReceipts() {
+
   const { data, loading } = useFinOpsData();
-  const [selectedReceipt, setSelectedReceipt] = useState(null);
 
-  if (loading || !data) return <PageSkeleton />;
+  const [selectedReceipt, setSelectedReceipt] =
+    useState(null);
 
-  // Mock payment receipts data
-  const receipts = [
-    {
-      id: 1,
-      date: "2024-03-15",
-      vendor: "AWS",
-      amount: 12500.00,
-      status: "Paid",
-      description: "Cloud computing services - March",
-      invoiceNumber: "INV-2024-001",
-    },
-    {
-      id: 2,
-      date: "2024-03-10",
-      vendor: "Microsoft Azure",
-      amount: 8750.50,
-      status: "Paid",
-      description: "Azure VM instances - February",
-      invoiceNumber: "INV-2024-002",
-    },
-    {
-      id: 3,
-      date: "2024-03-05",
-      vendor: "Google Cloud",
-      amount: 6200.75,
-      status: "Pending",
-      description: "GCP storage and compute - February",
-      invoiceNumber: "INV-2024-003",
-    },
-    {
-      id: 4,
-      date: "2024-02-28",
-      vendor: "Datadog",
-      amount: 3200.00,
-      status: "Paid",
-      description: "Monitoring and logging services",
-      invoiceNumber: "INV-2024-004",
-    },
-    {
-      id: 5,
-      date: "2024-02-20",
-      vendor: "Slack",
-      amount: 1800.25,
-      status: "Paid",
-      description: "Team communication platform",
-      invoiceNumber: "INV-2024-005",
-    },
-  ];
+  const [receipts, setReceipts] =
+    useState([]);
+
+  useEffect(() => {
+
+    const loadReceipts = async () => {
+
+      try {
+
+        const response =
+          await paymentReceiptService
+            .getReceipts();
+
+        console.log(
+          "Receipts Response:",
+          response
+        );
+
+        setReceipts(response);
+
+      } catch (error) {
+
+        console.error(
+          "Failed to load receipts",
+          error
+        );
+      }
+    };
+
+    loadReceipts();
+
+  }, []);
+
+  if (loading || !data) {
+    return <PageSkeleton />;
+  }
 
   const handleViewReceipt = (receipt) => {
     setSelectedReceipt(receipt);
   };
 
-  const handleDownloadReceipt = (receipt) => {
-    // Mock download functionality
-    toast.success(`Downloading receipt for ${receipt.vendor}`);
+  const handleDownloadReceipt = (
+    receipt
+  ) => {
+
+    window.open(
+      paymentReceiptService
+        .downloadReceipt(
+          receipt.id
+        ),
+      "_blank"
+    );
   };
 
-  const statusVariant = (status) => status === "Paid" ? "success" : "warning";
+  const statusVariant = (status) =>
+    status === "Paid"
+      ? "success"
+      : "warning";
 
   return (
     <div className="space-y-6">
