@@ -1,73 +1,154 @@
-# Welcome to your Lovable project
+# Ctrls-BUI
 
-## Project info
+Frontend application built with Vite.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## Prerequisites
 
-## How can I edit this code?
+* Node.js 18+
+* npm
+* Docker (for local development/testing)
 
-There are several ways of editing your application.
+---
 
-**Use Lovable**
+## Local Development
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+Install dependencies:
 
-Changes made via Lovable will be committed automatically to this repo.
+```bash
+npm install
+```
 
-**Use your preferred IDE**
+Start the development server:
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+The application will be available at:
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+```text
+http://localhost:5173
+```
 
-**Use GitHub Codespaces**
+---
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Docker Usage (Development/Testing Only)
 
-## What technologies are used for this project?
+> **Note:** Docker is currently used **only for development and testing purposes** to simplify local setup.
+>
+> **Production deployments do not use Docker** and follow the standard frontend deployment process.
 
-This project is built with:
+### Build Docker Image
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+```bash
+docker build -t ctrls-bui .
+```
 
-## How can I deploy this project?
+Verify the image:
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+```bash
+docker images
+```
 
-## Can I connect a custom domain to my Lovable project?
+---
 
-Yes, you can!
+### Run Development Server Using Docker
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+```bash
+docker run -d \
+  --name ctrls-bui-container \
+  -p 5173:5173 \
+  ctrls-bui
+```
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+Access the application:
+
+```text
+http://localhost:5173
+```
+
+---
+
+### Run with Hot Reload (Recommended for Development)
+
+```bash
+docker run -d \
+  --name ctrls-bui-container \
+  -p 5173:5173 \
+  -v $(pwd):/app \
+  -v /app/node_modules \
+  ctrls-bui
+```
+
+This allows code changes on the host machine to automatically reflect inside the running container.
+
+---
+
+### View Container Logs
+
+```bash
+docker logs -f ctrls-bui-container
+```
+
+---
+
+### Stop Container
+
+```bash
+docker stop ctrls-bui-container
+```
+
+---
+
+### Start Existing Container
+
+```bash
+docker start ctrls-bui-container
+```
+
+---
+
+### Remove Container
+
+```bash
+docker rm -f ctrls-bui-container
+```
+
+---
+
+### Remove Docker Image
+
+```bash
+docker rmi ctrls-bui
+```
+
+If the image is in use:
+
+```bash
+docker rm -f ctrls-bui-container
+docker rmi ctrls-bui
+```
+
+---
+
+## Production Build
+
+Generate an optimized production build:
+
+```bash
+npm run build
+```
+
+Preview the production build locally:
+
+```bash
+npm run preview
+```
+
+---
+
+## Production Deployment
+
+* Docker is **not used** in production.
+* Production deployments use the generated static assets from the `dist/` directory.
+* Docker configurations should be considered **development/testing utilities only**.
