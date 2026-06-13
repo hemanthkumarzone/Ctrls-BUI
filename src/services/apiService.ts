@@ -26,7 +26,8 @@ export class ApiService {
   private baseUrl: string;
   private timeout: number = 5000;
 
-  constructor(baseUrl: string = process.env.REACT_APP_API_URL || 'https://api.finops.local') {
+  constructor(baseUrl: string = import.meta.env.VITE_API_URL ||
+    'http://localhost:8001') {
     this.baseUrl = baseUrl;
   }
 
@@ -38,14 +39,29 @@ export class ApiService {
   ): Promise<T> {
     const url = `${this.baseUrl}${path}`;
 
-    const config: RequestInit = {
-      method,
-      headers: {
-        'Content-Type': 'application/json',
-        ...options?.headers,
-      },
-      ...options,
-    };
+    const token =
+  localStorage.getItem(
+    "access_token"
+  );
+
+const config: RequestInit = {
+  method,
+
+  headers: {
+    "Content-Type": "application/json",
+
+    ...(token
+      ? {
+          Authorization:
+            `Bearer ${token}`,
+        }
+      : {}),
+
+    ...options?.headers,
+  },
+
+  ...options,
+};
 
     if (data && (method === 'POST' || method === 'PUT' || method === 'PATCH')) {
       config.body = JSON.stringify(data);

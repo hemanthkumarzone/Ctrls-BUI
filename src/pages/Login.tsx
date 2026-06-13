@@ -1,158 +1,345 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '@/context/AuthContext';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { AlertCircle, Loader } from 'lucide-react';
-import { Alert, AlertDescription } from '@/components/ui/alert';
 
-export const LoginPage: React.FC = () => {
+import AuthLayout from "@/components/layout/AuthLayout";
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
+
+import {Card,CardContent,CardHeader,CardTitle,} from "@/components/ui/card";
+
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+
+export default function LoginPage() {
+
   const navigate = useNavigate();
-  const { login, isLoading } = useAuth();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const { login, isLoading } = useAuth();
+
+  const [form, setForm] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+
+    setForm((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+
+  };
+
+  const handleSubmit = async (
+    e: React.FormEvent
+  ) => {
+
     e.preventDefault();
-    setError('');
-    setIsSubmitting(true);
+
+    if (!form.email || !form.password) {
+      alert("Email and password are required");
+      return;
+    }
 
     try {
-      await login(email, password);
-      navigate('/dashboard');
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Login failed');
-    } finally {
-      setIsSubmitting(false);
+
+      const response = await login(
+        form.email,
+        form.password,
+        form.username
+      );
+      /* =========================
+   2FA LOGIN FLOW
+========================= */
+
+if (response?.requires_2fa) {
+
+  localStorage.setItem(
+    "verification_email",
+    form.email
+  );
+
+  localStorage.setItem(
+    "login_2fa",
+    "true"
+  );
+
+
+  alert("OTP sent to your email");
+
+  navigate("/verify-email");
+
+  return;
+}
+
+      
+
+      console.log("Login + Email success");
+
+      const params = new URLSearchParams(
+        window.location.search
+      );
+
+      const redirectUrl = params.get("redirect");
+
+      if (redirectUrl) {
+
+        window.location.href = redirectUrl;
+
+      } else {
+
+        navigate("/neon");
+
+      }
+
+    } catch (err: any) {
+
+      alert(err.message || "Login failed");
+
     }
   };
 
-  // Demo credentials hint
-  const fillDemoCredentials = () => {
-    setEmail('demo@finops.com');
-    setPassword('demo123');
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        {/* Logo/Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center h-16 w-16 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 mb-4">
-            <span className="text-2xl font-bold text-white">💰</span>
-          </div>
-          <h1 className="text-3xl font-bold text-white mb-2">FinOps Dashboard</h1>
-          <p className="text-slate-300">Advanced Cost Management Platform</p>
-        </div>
 
-        <Card className="border-slate-700 bg-slate-800">
-          <CardHeader>
-            <CardTitle className="text-white">Sign In</CardTitle>
-            <CardDescription>
-              Enter your credentials to access the dashboard
-            </CardDescription>
+    <AuthLayout>
+
+      <div
+        className="
+          relative
+          w-full
+          min-h-[calc(100vh-140px)]
+          flex
+          items-center
+          justify-center
+          overflow-hidden
+          px-4
+          py-10
+        "
+      >
+
+        {/* BACKGROUND DOTS */}
+        <div className="absolute inset-0 dot-pattern opacity-20" />
+
+        {/* SUBTLE GREEN GLOW */}
+        <div className="dashboard-glow opacity-10" />
+
+        {/* LOGIN CARD */}
+        <Card
+          className="
+            relative
+            z-10
+            w-full
+            max-w-[350px]
+            border
+            border-[#77B900]/20
+            bg-[#0B1208]/92
+            backdrop-blur-xl
+            rounded-[22px]
+            shadow-[0_0_30px_rgba(119,185,0,0.10)]
+          "
+        >
+
+          {/* HEADER */}
+          <CardHeader className="space-y-3 pb-4">
+
+            {/* LOGO */}
+            <div className="flex justify-center">
+
+              <img
+                src="/Kore Value Logo.png"
+                alt="logo"
+                className="
+                  w-[56px]
+                  h-[56px]
+                  object-contain
+                  glow-green
+                "
+              />
+
+            </div>
+
+            {/* TITLE */}
+            <CardTitle
+              className="
+                text-center
+                text-[30px]
+                font-semibold
+                text-white
+              "
+            >
+              Welcome Back
+            </CardTitle>
+
+            {/* SUBTITLE */}
+            <p
+              className="
+                text-center
+                text-[#A3A3A3]
+                text-sm
+                leading-[22px]
+              "
+            >
+              Sign in to continue to your cloud platform
+            </p>
+
           </CardHeader>
-          <CardContent>
-            {error && (
-              <Alert variant="destructive" className="mb-6">
-                <AlertCircle className="h-4 w-4" />
-                <AlertDescription>{error}</AlertDescription>
-              </Alert>
-            )}
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+          {/* CONTENT */}
+          <CardContent>
+
+            <form
+              onSubmit={handleSubmit}
+              className="space-y-4"
+              autoComplete="off"
+            >
+
+              {/* USERNAME */}
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-white">
+
+                <Label className="text-[#D1D5DB]">
+                  Username
+                </Label>
+
+                <Input
+                  name="username"
+                  value={form.username}
+                  onChange={handleChange}
+                  placeholder="Enter your username"
+                  autoComplete="username"
+                  className="
+                    h-[44px]
+                    bg-black/40
+                    border-[#77B900]/15
+                    focus:border-[#77B900]
+                    text-white
+                  "
+                />
+
+              </div>
+
+              {/* EMAIL */}
+              <div className="space-y-2">
+
+                <Label className="text-[#D1D5DB]">
                   Email Address
                 </Label>
+
                 <Input
-                  id="email"
                   type="email"
-                  placeholder="you@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  disabled={isSubmitting || isLoading}
-                  className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400"
-                  required
+                  name="email"
+                  value={form.email}
+                  onChange={handleChange}
+                  placeholder="Enter your email"
+                  autoComplete="email"
+                  className="
+                    h-[44px]
+                    bg-black/40
+                    border-[#77B900]/15
+                    focus:border-[#77B900]
+                    text-white
+                  "
                 />
+
               </div>
 
+              {/* PASSWORD */}
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-white">
+
+                <Label className="text-[#D1D5DB]">
                   Password
                 </Label>
+
                 <Input
-                  id="password"
                   type="password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  disabled={isSubmitting || isLoading}
-                  className="bg-slate-700 border-slate-600 text-white placeholder:text-slate-400"
-                  required
+                  name="password"
+                  value={form.password}
+                  onChange={handleChange}
+                  placeholder="Enter your password"
+                  autoComplete="new-password"
+                  className="
+                    h-[44px]
+                    bg-black/40
+                    border-[#77B900]/15
+                    focus:border-[#77B900]
+                    text-white
+                  "
                 />
+
+                <Link
+                  to="/forgot-password"
+                  className="
+                    text-right
+                    block
+                    text-sm
+                    text-[#77B900]
+                    mt-1
+                    hover:text-[#9fdc00]
+                    transition
+                  "
+                >
+                  Forgot Password?
+                </Link>
+
               </div>
 
+              {/* BUTTON */}
               <Button
                 type="submit"
-                className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-medium"
-                disabled={isSubmitting || isLoading}
+                disabled={isLoading}
+                className="
+                  w-full
+                  h-[46px]
+                  bg-[#77B900]
+                  hover:bg-[#8ED000]
+                  text-black
+                  font-semibold
+                  rounded-xl
+                  transition-all
+                  duration-300
+                  hover:shadow-[0_0_20px_rgba(119,185,0,0.35)]
+                "
               >
-                {isSubmitting || isLoading ? (
-                  <>
-                    <Loader className="mr-2 h-4 w-4 animate-spin" />
-                    Signing in...
-                  </>
-                ) : (
-                  'Sign In'
-                )}
+                {isLoading
+                  ? "Signing in..."
+                  : "Sign In"}
               </Button>
+
             </form>
 
-            <div className="relative my-6">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-slate-600"></div>
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-slate-800 text-slate-400">Don't have an account?</span>
-              </div>
-            </div>
-
-            <Link to="/signup"
-            onClick={(e) => e.preventDefault()}
-            className="pointer-events-none"
+            {/* FOOTER */}
+            <p
+              className="
+                text-center
+                text-sm
+                text-[#A3A3A3]
+                mt-5
+              "
             >
-              <Button
-                  variant="outline"
-                  className="w-full border-slate-600 text-white hover:bg-slate-700 pointer-events-none opacity-50"
-                  // disabled
-                >
-                  Create Account
-              </Button>
-            </Link>
+              New to CtrlS?
 
-            <div className="mt-6 pt-6 border-t border-slate-600">
-              <p className="text-xs text-slate-400 mb-3">Demo Credentials:</p>
-              <Button
-                type="button"
-                variant="ghost"
-                className="w-full text-xs text-slate-300 hover:text-white hover:bg-slate-700"
-                onClick={fillDemoCredentials}
+              <Link
+                to="/signup"
+                className="
+                  text-[#77B900]
+                  ml-1
+                  hover:text-[#9fdc00]
+                  transition
+                "
               >
-                Fill Demo Credentials
-              </Button>
-            </div>
+                Create Account →
+              </Link>
+
+            </p>
+
           </CardContent>
+
         </Card>
 
-        <p className="text-center text-slate-400 text-xs mt-6">
-          By signing in, you agree to our Terms of Service and Privacy Policy
-        </p>
       </div>
-    </div>
+
+    </AuthLayout>
   );
-};
+}

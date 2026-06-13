@@ -9,9 +9,14 @@ import { ThemeProvider } from "@/context/ThemeContext";
 import { NotificationProvider, NotificationsContainer } from "@/context/NotificationContext";
 import { Layout } from "@/components/layout/Layout";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
-import { LoginPage } from "@/pages/Login";
-import { SignupPage } from "@/pages/Signup";
+
+import LoginPage from "./pages/Login";
+import  SignupPage from "@/pages/Signup";
+import ForgotPassword from "./pages/ForgotPassword";
+import EmailVerification from "./pages/EmailVerification";
+import ResetPassword from "./pages/ResetPassword";
 import { ProfilePage } from "@/pages/Profile";
+
 import Dashboard from "@/pages/Dashboard";
 import FeatureShowcase from "@/pages/FeatureShowcase";
 import CostAnalyzer from "@/pages/CostAnalyzer";
@@ -28,57 +33,143 @@ import Budgeting from "@/pages/Budgeting";
 import PaymentReceipts from "@/pages/PaymentReceipts";
 import NotFound from "@/pages/NotFound";
 
+import NeonDashboard from "@/pages/NeonDashboard";
+import UserDashboard from "@/pages/UserDashboard";
+import PlansBilling from "./pages/PlansBilling";
+import { SubscriptionProvider } from "@/context/SubscriptionContext";
+import ContactSales from "./pages/ContactSales";
+import Billing from "./pages/Billing";
+
+
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <ThemeProvider>
       <AuthProvider>
-        <NotificationProvider>
-          <TooltipProvider>
-            <AppProvider>
-              <Toaster />
-              <Sonner />
-              <NotificationsContainer />
+        
+          <NotificationProvider>
+            <TooltipProvider>
+              <SubscriptionProvider>
+              <AppProvider>
+                <Toaster />
+                <Sonner />
+                <NotificationsContainer />
+
               <BrowserRouter>
                 <Routes>
-                  {/* Auth Routes */}
+
+                  {/* 🔓 Public Routes */}
                   <Route path="/login" element={<LoginPage />} />
                   <Route path="/signup" element={<SignupPage />} />
-                  
-                  {/* Protected Routes */}
+                  <Route path="/forgot-password" element={<ForgotPassword />} />
+                  <Route path="/verify-email" element={<EmailVerification />} />
+                  <Route path="/reset-password" element={<ResetPassword />} />
+
+                  {/* 🔥 Neon Dashboard (FULL PAGE, no Layout) */}
                   <Route
-                    path="/*"
+                    path="/neon"
                     element={
                       <ProtectedRoute>
-                        <Layout>
-                          <Routes>
-                            <Route path="/" element={<Dashboard />} />
-                            <Route path="/dashboard" element={<Dashboard />} />
-                            <Route path="/profile" element={<ProfilePage />} />
-                            <Route path="/features" element={<FeatureShowcase />} />
-                            <Route path="/cost-analyzer" element={<CostAnalyzer />} />
-                            <Route path="/categories" element={<Categories />} />
-                            <Route path="/kubernetes" element={<Kubernetes />} />
-                            <Route path="/recommendations" element={<Recommendations />} />
-                            <Route path="/anomalies" element={<Anomalies />} />
-                            <Route path="/reports" element={<Reports />} />
-                            <Route path="/virtual-tags" element={<VirtualTags />} />
-                            <Route path="/cost-allocation" element={<CostAllocation />} />
-                            <Route path="/unit-economics" element={<UnitEconomics />} />
-                            <Route path="/forecasting" element={<Forecasting />} />
-                            <Route path="/budgeting" element={<Budgeting />} />
-                            <Route path="/payment-receipts" element={<PaymentReceipts />} />
-                            <Route path="*" element={<NotFound />} />
-                          </Routes>
-                        </Layout>
+                        <NeonDashboard />
                       </ProtectedRoute>
                     }
                   />
+                  <Route
+  path="/user-dashboard"
+  element={
+    <ProtectedRoute>
+      <UserDashboard />
+    </ProtectedRoute>
+  }
+/>
+
+                  {/* 🔐 Main App with Layout */}
+                  <Route
+                    path="/"
+                    element={
+                      <ProtectedRoute>
+                        <Layout />
+                      </ProtectedRoute>
+                    }
+                  >
+                    <Route index element={<Dashboard />} />
+                    <Route path="dashboard" element={<Dashboard />} />
+                    <Route path="profile" element={<ProfilePage />} />
+                    <Route path="features" element={<FeatureShowcase />} />
+                    <Route path="cost-analyzer" element={<CostAnalyzer />} />
+                    <Route path="categories" element={<Categories />} />
+                    <Route path="kubernetes" element={<Kubernetes />} />
+                    <Route path="recommendations" element={<Recommendations />} />
+                    <Route path="anomalies" element={<Anomalies />} />
+                    <Route path="reports" element={<Reports />} />
+                    <Route path="virtual-tags" element={<VirtualTags />} />
+                    <Route
+  path="cost-allocation"
+  element={
+    <ProtectedRoute
+      allowedPlans={[
+        "platform-plus",
+        "enterprise",
+        "datacenter",
+      ]}
+    >
+      <CostAllocation />
+    </ProtectedRoute>
+  }
+/>
+                    <Route path="unit-economics" element={<UnitEconomics />} />
+                    <Route
+  path="forecasting"
+  element={
+    <ProtectedRoute
+      allowedPlans={[
+        "platform",
+        "platform-plus",
+        "enterprise",
+        "datacenter",
+      ]}
+    >
+      <Forecasting />
+    </ProtectedRoute>
+  }
+/>
+                    <Route
+  path="budgeting"
+  element={
+    <ProtectedRoute
+      allowedPlans={[
+        "platform",
+        "platform-plus",
+        "enterprise",
+        "datacenter",
+      ]}
+    >
+      <Budgeting />
+    </ProtectedRoute>
+  }
+/>
+                    <Route
+  path="payment-receipts"
+  element={
+    <ProtectedRoute>
+      <PaymentReceipts />
+    </ProtectedRoute>
+  }
+/>
+                    <Route path="/plans-billing" element={<PlansBilling />} />
+                    <Route path="/contact-sales" element={<ContactSales />} />
+                    <Route path="/billing" element={<Billing />} />
+                    <Route path="*" element={<NotFound />} />
+                  </Route>
+
                 </Routes>
               </BrowserRouter>
+
             </AppProvider>
+            </SubscriptionProvider>
           </TooltipProvider>
+          
         </NotificationProvider>
       </AuthProvider>
     </ThemeProvider>

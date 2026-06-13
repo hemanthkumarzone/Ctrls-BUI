@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import type { FinOpsData } from "@/types/finops.types";
-import { finOpsApi } from "@/services/finOpsApi";
 
 interface UseFinOpsDataReturn {
   data: FinOpsData | null;
@@ -16,10 +15,12 @@ export function useFinOpsData(): UseFinOpsDataReturn {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const json = await finOpsApi.getAllData();
+        const res = await fetch("/fakedata.json");
+        if (!res.ok) throw new Error("Failed to fetch data");
+        const json: FinOpsData = await res.json();
         setData(json);
-      } catch (err: any) {
-        setError(err.message || "Unknown error");
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Unknown error");
       } finally {
         setLoading(false);
       }

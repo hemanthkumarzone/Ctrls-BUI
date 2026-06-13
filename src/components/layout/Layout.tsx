@@ -2,8 +2,9 @@ import { Sidebar } from "./Sidebar";
 import { Header } from "./Header";
 import { useAppContext } from "@/context/AppContext";
 import { cn } from "@/lib/utils";
+import { Outlet } from "react-router-dom"; // ✅ ADD THIS
 
-export function Layout({ children }: { children: React.ReactNode }) {
+export function Layout() {
   const { sidebarOpen } = useAppContext();
 
   return (
@@ -11,7 +12,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <Sidebar />
       <div className={cn("transition-all duration-300", sidebarOpen ? "ml-64" : "ml-16")}>
         <Header />
-        <main className="animate-fade-in p-6">{children}</main>
+
+        {/* ✅ THIS IS IMPORTANT */}
+        <main className="animate-fade-in p-6">
+          <Outlet />
+        </main>
+
       </div>
     </div>
   );
