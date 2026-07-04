@@ -53,7 +53,7 @@ export function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-card px-6">
+    <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-border bg-[hsl(var(--card))] px-6 shadow-[0_8px_20px_rgba(0,0,0,0.15)]">
       <div className="flex items-center gap-3">
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}

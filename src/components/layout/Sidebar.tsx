@@ -103,17 +103,27 @@ export function Sidebar() {
   return (
     <aside
       className={cn(
-        "fixed left-0 top-0 z-40 flex h-full flex-col border-r bg-sidebar transition-all duration-300",
+        "fixed left-0 top-0 z-40 flex h-full flex-col border-r border-sidebar-border bg-[hsl(var(--sidebar-background))] text-sidebar-foreground shadow-[0_0_30px_rgba(0,0,0,0.35)] transition-all duration-300",
         sidebarOpen ? "w-64" : "w-16"
       )}
     >
-      <div className="flex h-16 items-center justify-between border-b px-4">
-        {sidebarOpen && (
-          <span className="text-lg font-bold text-primary">FinOps AI</span>
+      <div className="flex h-16 items-center justify-between border-b border-sidebar-border px-3">
+        {sidebarOpen ? (
+          <div className="flex items-center gap-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/15 text-primary">
+              <LayoutDashboard size={16} />
+            </div>
+            <span className="text-[15px] font-semibold tracking-[0.2em] text-primary uppercase">CtrlS</span>
+          </div>
+        ) : (
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/15 text-primary">
+            <LayoutDashboard size={16} />
+          </div>
         )}
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="rounded-md p-1.5 text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+          className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-muted-foreground transition hover:bg-primary/15 hover:text-primary"
+          aria-label="Toggle sidebar"
         >
           {sidebarOpen ? <ChevronLeft size={18} /> : <ChevronRight size={18} />}
         </button>
@@ -129,12 +139,12 @@ export function Sidebar() {
               key={item.path}
               to={item.path}
               className={cn(
-                "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-150",
+                "relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200",
                 isActive
-                  ? "border-l-2 border-primary bg-sidebar-accent text-primary"
-                :isLocked
-  ? "opacity-40 cursor-not-allowed"
-  : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                  ? "bg-primary text-primary-foreground shadow-[0_0_24px_rgba(124,255,0,0.22)]"
+                  : isLocked
+                    ? "cursor-not-allowed opacity-40"
+                    : "text-sidebar-foreground hover:bg-[hsl(var(--sidebar-accent))] hover:text-[hsl(var(--sidebar-accent-foreground))]"
               )}
             >
               <item.icon size={18} className="shrink-0" />

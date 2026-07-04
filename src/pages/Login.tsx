@@ -18,7 +18,6 @@ export default function LoginPage() {
 
   const [form, setForm] = useState({
     username: "",
-    email: "",
     password: "",
   });
 
@@ -39,15 +38,15 @@ export default function LoginPage() {
 
     e.preventDefault();
 
-    if (!form.email || !form.password) {
-      alert("Email and password are required");
+    if (!form.username || !form.password) {
+      alert("Username and password are required");
       return;
     }
 
     try {
 
       const response = await login(
-        form.email,
+        form.username,
         form.password,
         form.username
       );
@@ -59,7 +58,7 @@ if (response?.requires_2fa) {
 
   localStorage.setItem(
     "verification_email",
-    form.email
+    response?.email || form.username
   );
 
   localStorage.setItem(
@@ -196,44 +195,19 @@ if (response?.requires_2fa) {
               autoComplete="off"
             >
 
-              {/* USERNAME */}
+              {/* USERNAME / USER ID */}
               <div className="space-y-2">
 
                 <Label className="text-[#D1D5DB]">
-                  Username
+                  User ID
                 </Label>
 
                 <Input
                   name="username"
                   value={form.username}
                   onChange={handleChange}
-                  placeholder="Enter your username"
+                  placeholder="Enter your user ID"
                   autoComplete="username"
-                  className="
-                    h-[44px]
-                    bg-black/40
-                    border-[#77B900]/15
-                    focus:border-[#77B900]
-                    text-white
-                  "
-                />
-
-              </div>
-
-              {/* EMAIL */}
-              <div className="space-y-2">
-
-                <Label className="text-[#D1D5DB]">
-                  Email Address
-                </Label>
-
-                <Input
-                  type="email"
-                  name="email"
-                  value={form.email}
-                  onChange={handleChange}
-                  placeholder="Enter your email"
-                  autoComplete="email"
                   className="
                     h-[44px]
                     bg-black/40
