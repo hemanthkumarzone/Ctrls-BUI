@@ -2,7 +2,7 @@ import { NavLink, useLocation } from "react-router-dom";
 import { useAppContext } from "@/context/AppContext";
 import {
   LayoutDashboard, BarChart3, Layers, Ship, Lightbulb, AlertTriangle,
-  FileText, Tag, Users, TrendingUp, CloudLightning, Wallet, ChevronLeft, ChevronRight, Receipt,CreditCard
+  FileText, Tag, Users, TrendingUp, CloudLightning, Wallet, ChevronLeft, ChevronRight, Receipt,CreditCard, Bot, Cpu
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useSubscription } from "@/context/SubscriptionContext";
@@ -12,6 +12,12 @@ const navItems = [
     path: "/",
     label: "Dashboard",
     icon: LayoutDashboard,
+  },
+
+  {
+    path: "/agent-ops",
+    label: "Agent Ops",
+    icon: Bot,
   },
 
   {

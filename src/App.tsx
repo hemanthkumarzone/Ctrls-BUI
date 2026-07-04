@@ -19,6 +19,7 @@ import { ProfilePage } from "@/pages/Profile";
 
 import Dashboard from "@/pages/Dashboard";
 import FeatureShowcase from "@/pages/FeatureShowcase";
+import AgentOps from "@/pages/AgentOps";
 import CostAnalyzer from "@/pages/CostAnalyzer";
 import Categories from "@/pages/Categories";
 import Kubernetes from "@/pages/Kubernetes";
@@ -97,6 +98,7 @@ const App = () => (
                     <Route path="dashboard" element={<Dashboard />} />
                     <Route path="profile" element={<ProfilePage />} />
                     <Route path="features" element={<FeatureShowcase />} />
+                    <Route path="agent-ops" element={<AgentOps />} />
                     <Route path="cost-analyzer" element={<CostAnalyzer />} />
                     <Route path="categories" element={<Categories />} />
                     <Route path="kubernetes" element={<Kubernetes />} />
