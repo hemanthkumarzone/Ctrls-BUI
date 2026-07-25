@@ -6,7 +6,7 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 8080,
-    allowedHosts: ["business.ctrls.co"], // 👈 add this
+    allowedHosts: ["business.ctrls.co","https://business.seynova.ai/"], // 👈 add this
     hmr: {
       overlay: false,
     },
