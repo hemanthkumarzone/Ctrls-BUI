@@ -19,6 +19,16 @@ const navItems = [
     label: "Agent Ops",
     icon: Bot,
   },
+  {
+    path: "/llm-ops",
+    label: "LLM Ops",
+    icon: Layers,
+  },
+  {
+    path: "/token-ops",
+    label: "Token-OPS",
+    icon: Cpu,
+  },
 
   {
     path: "/cost-analyzer",

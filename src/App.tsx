@@ -20,6 +20,8 @@ import { ProfilePage } from "@/pages/Profile";
 import Dashboard from "@/pages/Dashboard";
 import FeatureShowcase from "@/pages/FeatureShowcase";
 import AgentOps from "@/pages/AgentOps";
+import LLMOps from "@/pages/LLMOps";
+import TokenOPS from "@/pages/TokenOPS";
 import CostAnalyzer from "@/pages/CostAnalyzer";
 import Categories from "@/pages/Categories";
 import Kubernetes from "@/pages/Kubernetes";
@@ -99,6 +101,8 @@ const App = () => (
                     <Route path="profile" element={<ProfilePage />} />
                     <Route path="features" element={<FeatureShowcase />} />
                     <Route path="agent-ops" element={<AgentOps />} />
+                    <Route path="llm-ops" element={<LLMOps />} />
+                    <Route path="token-ops" element={<TokenOPS />} />
                     <Route path="cost-analyzer" element={<CostAnalyzer />} />
                     <Route path="categories" element={<Categories />} />
                     <Route path="kubernetes" element={<Kubernetes />} />
