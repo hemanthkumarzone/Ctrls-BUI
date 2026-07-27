@@ -129,7 +129,7 @@ export function Sidebar() {
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/15 text-primary">
               <LayoutDashboard size={16} />
             </div>
-            <span className="text-[15px] font-semibold tracking-[0.2em] text-primary uppercase">CtrlS</span>
+            <span className="text-[15px] font-semibold tracking-[0.2em] text-primary uppercase">Seynova</span>
           </div>
         ) : (
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/15 text-primary">

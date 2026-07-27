@@ -108,7 +108,7 @@ const AuthFooter = () => {
         {/* Bottom */}
         <div className="auth-footer-bottom">
           <p className="auth-footer-copyright">
-            © 2026 CtrlS AI-Powered Cloud Intelligence Platform
+            © 2026 Seynova AI-Powered Cloud Intelligence Platform
           </p>
         </div>
       </footer>

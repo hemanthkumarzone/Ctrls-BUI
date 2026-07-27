@@ -292,7 +292,7 @@ if (response?.requires_2fa) {
                 mt-5
               "
             >
-              New to CtrlS?
+              New to Seynova?
 
               <Link
                 to="/signup"

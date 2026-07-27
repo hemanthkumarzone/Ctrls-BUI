@@ -24,13 +24,13 @@ const AuthNavbar = () => {
 
         {/* LEFT LOGO */}
         <a
-          href="https://ctrls.co"
+          href="https://seynova.ai/"
           className="flex items-center"
         >
 
           <img
             src="/Kore Value Logo.png"
-            alt="CtrlS Logo"
+            alt="Seynova Logo"
             className="
               h-[52px]
               object-contain
@@ -56,7 +56,7 @@ const AuthNavbar = () => {
         >
 
           <a
-            href="https://ctrls.co"
+            href="https://seynova.ai/"
             className="
               relative
               hover:text-[#9fdc00]
@@ -77,7 +77,7 @@ const AuthNavbar = () => {
           </a>
 
           <a
-            href="https://ctrls.co"
+            href="https://seynova.ai/"
             className="
               relative
               hover:text-[#9fdc00]
@@ -98,7 +98,7 @@ const AuthNavbar = () => {
           </a>
 
           <a
-            href="https://ctrls.co"
+            href="https://seynova.ai/"
             className="
               relative
               hover:text-[#9fdc00]
@@ -119,7 +119,7 @@ const AuthNavbar = () => {
           </a>
 
           <a
-            href="https://ctrls.co"
+            href="https://seynova.ai/"
             className="
               relative
               hover:text-[#9fdc00]
@@ -140,7 +140,7 @@ const AuthNavbar = () => {
           </a>
 
           <a
-            href="https://ctrls.co"
+            href="https://seynova.ai/"
             className="
               relative
               hover:text-[#9fdc00]
@@ -164,7 +164,7 @@ const AuthNavbar = () => {
 
         {/* RIGHT BUTTON */}
         <a
-          href="https://ctrls.co"
+          href="https://seynova.ai/"
           className="
             px-5 py-3
             rounded-[14px]
