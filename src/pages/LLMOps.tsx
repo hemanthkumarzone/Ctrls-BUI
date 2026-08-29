@@ -93,17 +93,32 @@ export default function LLMOps() {
     const loadData = async () => {
       try {
         setLoading(true);
-        const response = await fetch(API_URL);
+        try {
+          const response = await fetch(API_URL);
 
-        if (!response.ok) {
-          throw new Error(`Request failed with status ${response.status}`);
-        }
+          if (!response.ok) {
+            throw new Error(`Request failed with status ${response.status}`);
+          }
 
-        const json = (await response.json()) as LLMOpsPayload;
+          const json = (await response.json()) as LLMOpsPayload;
 
-        if (mounted) {
-          setData(json);
-          setError(null);
+          if (mounted) {
+            setData(json);
+            setError(null);
+          }
+        } catch {
+          // Fallback to mock data from fakedata.json
+          const response = await fetch("/fakedata.json");
+          if (!response.ok) {
+            throw new Error("Failed to load mock data");
+          }
+          const allData = await response.json();
+          const llmOpsData = allData.llmOps as LLMOpsPayload;
+          
+          if (mounted) {
+            setData(llmOpsData);
+            setError(null);
+          }
         }
       } catch (err) {
         if (mounted) {

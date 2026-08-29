@@ -168,5 +168,121 @@
     { "id": "rcpt-3", "vendor": "Azure", "amount": 34800, "currency": "USD", "date": "2026-03-03T00:00:00Z", "status": "pending", "invoiceNumber": "INV-AZ-2026-03", "description": "Azure Monthly Bill - March 2026", "category": "Storage", "downloadUrl": "/receipts/rcpt-3.pdf" },
     { "id": "rcpt-4", "vendor": "AWS", "amount": 62100, "currency": "USD", "date": "2026-02-01T00:00:00Z", "status": "paid", "invoiceNumber": "INV-AWS-2026-02", "description": "AWS Monthly Bill - Feb 2026", "category": "Compute", "downloadUrl": "/receipts/rcpt-4.pdf" },
     { "id": "rcpt-5", "vendor": "GCP", "amount": 44600, "currency": "USD", "date": "2026-02-02T00:00:00Z", "status": "paid", "invoiceNumber": "INV-GCP-2026-02", "description": "GCP Monthly Bill - Feb 2026", "category": "Kubernetes", "downloadUrl": "/receipts/rcpt-5.pdf" }
-  ]
+  ],
+  "agentOps": {
+    "summary": {
+      "requests": 156800,
+      "tokens": 24500000,
+      "cost": 4250.50,
+      "successRate": 98.2,
+      "avgLatency": 245
+    },
+    "kpis": [
+      { "label": "Active Agents", "value": "24", "delta": "+3", "trend": "up" },
+      { "label": "Error Rate", "value": "1.8%", "delta": "-0.5%", "trend": "down" },
+      { "label": "Avg Token Cost", "value": "$0.000173", "delta": "+0.002%", "trend": "up" },
+      { "label": "Monthly Spend", "value": "$4,250", "delta": "+12.3%", "trend": "up" }
+    ],
+    "costTrend": [
+      { "month": "Dec 2025", "cost": 3200 },
+      { "month": "Jan 2026", "cost": 3650 },
+      { "month": "Feb 2026", "cost": 3780 },
+      { "month": "Mar 2026", "cost": 4250 }
+    ],
+    "providerUsage": [
+      { "name": "OpenAI GPT-4", "requests": 78400, "cost": 2150.25, "latency": 240, "share": 50 },
+      { "name": "Claude 3.5", "requests": 47040, "cost": 1410.12, "latency": 280, "share": 30 },
+      { "name": "Gemini Pro", "requests": 23520, "cost": 470.19, "latency": 190, "share": 15 },
+      { "name": "Llama 2", "requests": 7840, "cost": 219.94, "latency": 150, "share": 5 }
+    ],
+    "recentExecutions": [
+      { "id": "exec-001", "name": "Customer Support Agent", "status": "completed", "duration": "2.3s", "cost": "$0.045" },
+      { "id": "exec-002", "name": "Data Analysis Pipeline", "status": "completed", "duration": "5.1s", "cost": "$0.128" },
+      { "id": "exec-003", "name": "Email Classification", "status": "in_progress", "duration": "1.8s", "cost": "$0.031" },
+      { "id": "exec-004", "name": "Report Generation", "status": "completed", "duration": "3.7s", "cost": "$0.089" },
+      { "id": "exec-005", "name": "Content Moderation", "status": "failed", "duration": "0.5s", "cost": "$0.012" }
+    ],
+    "toolRegistry": [
+      { "name": "web-search", "status": "healthy", "latency": "120ms" },
+      { "name": "sql-query", "status": "healthy", "latency": "180ms" },
+      { "name": "pdf-extract", "status": "healthy", "latency": "240ms" },
+      { "name": "image-analysis", "status": "degraded", "latency": "450ms" },
+      { "name": "email-send", "status": "healthy", "latency": "90ms" }
+    ],
+    "guardrails": [
+      { "name": "Content Filter", "value": 98.5, "tone": "info" },
+      { "name": "Rate Limiter", "value": 95.2, "tone": "warning" },
+      { "name": "Cost Threshold", "value": 87.3, "tone": "critical" },
+      { "name": "Latency Monitor", "value": 92.8, "tone": "info" }
+    ],
+    "ragStats": [
+      { "name": "Documents Indexed", "value": "1,250" },
+      { "name": "Avg Retrieval Time", "value": "145ms" },
+      { "name": "Retrieval Accuracy", "value": "94.2%" },
+      { "name": "Cache Hit Rate", "value": "68.5%" }
+    ],
+    "quickActions": [
+      { "title": "Optimize Agent Costs", "description": "Review provider usage and find cost savings", "action": "review" },
+      { "title": "Scale Up Agents", "description": "Add more parallel execution capacity", "action": "scale" },
+      { "title": "Debug Failed Executions", "description": "Investigate recent execution failures", "action": "debug" }
+    ]
+  },
+  "llmOps": {
+    "summary": {
+      "requests": 89250,
+      "tokens": 18750000,
+      "cost": 3180.75,
+      "successRate": 99.1,
+      "avgLatency": 210
+    },
+    "kpis": [
+      { "label": "Total LLM Calls", "value": "89.2K", "delta": "+8.5%", "trend": "up" },
+      { "label": "Success Rate", "value": "99.1%", "delta": "+0.3%", "trend": "up" },
+      { "label": "Cost per 1K Tokens", "value": "$0.0169", "delta": "-0.001%", "trend": "down" },
+      { "label": "Avg Response Time", "value": "210ms", "delta": "-15ms", "trend": "down" }
+    ],
+    "costTrend": [
+      { "month": "Dec 2025", "cost": 2450 },
+      { "month": "Jan 2026", "cost": 2890 },
+      { "month": "Feb 2026", "cost": 3050 },
+      { "month": "Mar 2026", "cost": 3180 }
+    ],
+    "providerUsage": [
+      { "name": "OpenAI GPT-4 Turbo", "requests": 44625, "cost": 1590.38, "latency": 200, "share": 50 },
+      { "name": "Claude Instant", "requests": 26775, "cost": 953.58, "latency": 180, "share": 30 },
+      { "name": "Cohere Generate", "requests": 13387, "cost": 318.76, "latency": 220, "share": 15 },
+      { "name": "AI21 Studio", "requests": 4463, "cost": 318.03, "latency": 250, "share": 5 }
+    ],
+    "recentExecutions": [
+      { "id": "llm-001", "name": "Text Generation", "status": "completed", "duration": "1.2s", "cost": "$0.028" },
+      { "id": "llm-002", "name": "Code Completion", "status": "completed", "duration": "0.9s", "cost": "$0.015" },
+      { "id": "llm-003", "name": "Summarization", "status": "completed", "duration": "2.1s", "cost": "$0.062" },
+      { "id": "llm-004", "name": "Translation", "status": "in_progress", "duration": "1.5s", "cost": "$0.041" },
+      { "id": "llm-005", "name": "Q&A Chain", "status": "completed", "duration": "3.2s", "cost": "$0.085" }
+    ],
+    "toolRegistry": [
+      { "name": "completion", "status": "healthy", "latency": "150ms" },
+      { "name": "embedding", "status": "healthy", "latency": "100ms" },
+      { "name": "moderation", "status": "healthy", "latency": "80ms" },
+      { "name": "fine-tuning", "status": "healthy", "latency": "3000ms" },
+      { "name": "vision", "status": "degraded", "latency": "500ms" }
+    ],
+    "guardrails": [
+      { "name": "Prompt Injection Filter", "value": 99.8, "tone": "info" },
+      { "name": "Output Validation", "value": 98.2, "tone": "info" },
+      { "name": "Token Budget", "value": 85.4, "tone": "warning" },
+      { "name": "Rate Limiter", "value": 96.1, "tone": "info" }
+    ],
+    "ragStats": [
+      { "name": "Context Windows Used", "value": "8.2K" },
+      { "name": "Avg Tokens per Request", "value": "210" },
+      { "name": "Context Quality Score", "value": "92.3%" },
+      { "name": "Prompt Cache Hit Rate", "value": "45.8%" }
+    ],
+    "quickActions": [
+      { "title": "Fine-tune Model", "description": "Create a custom fine-tuned model for your use case", "action": "finetune" },
+      { "title": "Optimize Prompts", "description": "Review and improve prompt templates for better results", "action": "optimize" },
+      { "title": "Monitor Costs", "description": "Check token usage and cost trends", "action": "monitor" }
+    ]
+  }
 }
