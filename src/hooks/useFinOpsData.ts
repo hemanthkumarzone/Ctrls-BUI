@@ -7,6 +7,9 @@ interface UseFinOpsDataReturn {
   error: string | null;
 }
 
+// API base URL - configured via environment variable or defaults to localhost
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
+
 export function useFinOpsData(): UseFinOpsDataReturn {
   const [data, setData] = useState<FinOpsData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -15,12 +18,26 @@ export function useFinOpsData(): UseFinOpsDataReturn {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch("/fakedata.json");
-        if (!res.ok) throw new Error("Failed to fetch data");
+        // Call the metrics API endpoint instead of static file
+        const endpoint = `${API_BASE_URL}/metrics/all`;
+        const res = await fetch(endpoint);
+        if (!res.ok) throw new Error(`Failed to fetch data: ${res.status}`);
         const json: FinOpsData = await res.json();
         setData(json);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Unknown error");
+        // Fallback to static file if API is not available (for development)
+        console.warn("API unavailable, attempting fallback...");
+        try {
+          const fallbackRes = await fetch("/fakedata.json");
+          if (fallbackRes.ok) {
+            const json: FinOpsData = await fallbackRes.json();
+            setData(json);
+            setError(null);
+          }
+        } catch (fallbackErr) {
+          console.error("Fallback also failed:", fallbackErr);
+        }
       } finally {
         setLoading(false);
       }
